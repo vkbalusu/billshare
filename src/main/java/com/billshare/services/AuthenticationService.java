@@ -22,7 +22,7 @@ public class AuthenticationService implements UserDetailsService{
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		
-		com.billshare.entities.User user = userRepository.findByEmail(username);
+		com.billshare.entities.UserEntity user = userRepository.findByEmail(username);
 		if(user == null)
 			throw new RecordNotFoundException(ExceptionMessages.USER_NOT_FOUND);
 		return new User(user.getEmail(), user.getPassword(), new ArrayList<>());

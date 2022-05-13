@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
@@ -47,6 +48,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler{
 		return new ResponseEntity<BillShareResponse>(response, HttpStatus.OK);
 	}
 	
+	@ExceptionHandler(value = BillShareException.class)
+	public ResponseEntity<BillShareResponse> handleBillShareException(BillShareException exception){
+		ErrorDetails errorDetails = new ErrorDetails(new ArrayList<String>(Arrays.asList(exception.getMessage())), null);
+		BillShareResponse response = new BillShareResponse(HttpStatus.BAD_REQUEST, null, errorDetails);
+		return new ResponseEntity<BillShareResponse>(response, HttpStatus.OK);
+	}
+	
 	//fall back method - used if no exception handler method matches
 	@ExceptionHandler(value = Exception.class)
 	public ResponseEntity<BillShareResponse> handleException(Exception exception){
@@ -73,6 +81,17 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler{
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 	
+	
+	
+	
+	@Override
+	protected ResponseEntity<Object> handleMissingServletRequestParameter(MissingServletRequestParameterException ex,
+			HttpHeaders headers, HttpStatus status, WebRequest request) {
+		ErrorDetails errorDetails = new ErrorDetails(new ArrayList<String>(Arrays.asList(ex.getMessage())), null);
+		BillShareResponse response = new BillShareResponse(HttpStatus.BAD_REQUEST, null, errorDetails);
+		return new ResponseEntity<>(response, HttpStatus.OK);
+	}
+
 	private String getStackTrace(Exception exception) {
 		StringWriter stringWriter = new StringWriter();
 		PrintWriter printWriter = new PrintWriter(stringWriter);

@@ -1,25 +1,23 @@
 package com.billshare.entities;
 
 import java.sql.Timestamp;
+import java.util.Collection;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.billshare.models.forms.CreateUserForm;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name="users")
-public class User {
-	
-//	@Autowired
-//	BCryptPasswordEncoder encoder;
-	
+public class UserEntity {
+		
 	@Id
 	@GeneratedValue
 	public Long userId;
@@ -33,8 +31,6 @@ public class User {
 	
 	public String email;
 	
-	//exclude in GET API responses
-	@JsonIgnore
 	public String password;
 	
 	public String avatar;
@@ -45,11 +41,17 @@ public class User {
 	
 	public Timestamp lastUpdateDate;
 	
-	public User() {
+	@OneToMany(mappedBy = "requester")
+	public Collection<FriendEntity> friends;
+				
+	@OneToMany(mappedBy = "addressee")
+	public Collection<FriendEntity> friendOf;
+	
+	public UserEntity() {
 		
 	}
 	
-	public User(Long user_id, String firstName, String lastName, String nickName, String email, String password,
+	public UserEntity(Long user_id, String firstName, String lastName, String nickName, String email, String password,
 			String avatar, String phone, Timestamp creationDate, Timestamp lastUpdateDate) {
 		super();
 		this.userId = user_id;
@@ -65,7 +67,7 @@ public class User {
 		this.lastUpdateDate = lastUpdateDate;
 	}
 	
-	public User(CreateUserForm form) {
+	public UserEntity(CreateUserForm form) {
 		this.firstName = form.getFirstName();
 		this.lastName = form.getLastName();
 		this.nickName = form.getNickName();
@@ -156,6 +158,22 @@ public class User {
 
 	public void setLastUpdateDate(Timestamp lastUpdateDate) {
 		this.lastUpdateDate = lastUpdateDate;
+	}
+
+	public Collection<FriendEntity> getFriends() {
+		return friends;
+	}
+
+	public void setFriends(Collection<FriendEntity> friends) {
+		this.friends = friends;
+	}
+
+	public Collection<FriendEntity> getFriendOf() {
+		return friendOf;
+	}
+
+	public void setFriendOf(Collection<FriendEntity> friendOf) {
+		this.friendOf = friendOf;
 	}
 	
 }
