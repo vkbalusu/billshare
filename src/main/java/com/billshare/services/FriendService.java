@@ -7,12 +7,10 @@ import org.springframework.stereotype.Service;
 
 import com.billshare.entities.FriendEntity;
 import com.billshare.entities.UserEntity;
-import com.billshare.exceptions.AuthenticationException;
 import com.billshare.exceptions.BillShareException;
 import com.billshare.exceptions.RecordNotFoundException;
 import com.billshare.repositories.FriendRepository;
 import com.billshare.repositories.UserRepository;
-import com.billshare.utils.AuthenticationUtils;
 import com.billshare.utils.BillShareMessages;
 import com.billshare.utils.ExceptionMessages;
 
@@ -23,19 +21,19 @@ public class FriendService {
 	private UserRepository userRepository;
 	
 	@Autowired
-	private AuthenticationUtils authenticationUtils;
+	private FriendRepository friendRepository; 
 	
 	@Autowired
-	private FriendRepository friendRepository; 
+	private UserService userService;
 
 	public String sendRequest(String token, String addresseeEmail) {
+	
+		UserEntity requestor =  userService.findUser(token);
+		String requesterEmail = requestor.getEmail();
 		
-		if(!token.startsWith("Bearer "))
-			throw new AuthenticationException(ExceptionMessages.NO_AUTH_TOKEN);
-		String requesterEmail = authenticationUtils.extractUsername(token.substring(7));
 		if(addresseeEmail.equals(requesterEmail))
 				throw new BillShareException(ExceptionMessages.SELF_REQUEST);
-		UserEntity requestor =  userRepository.findByEmail(requesterEmail);
+		
 		UserEntity addressee =  userRepository.findByEmail(addresseeEmail);
 		if(requestor == null || addressee == null)
 			throw new RecordNotFoundException(ExceptionMessages.USER_NOT_FOUND);
@@ -68,17 +66,14 @@ public class FriendService {
 	
 	public String approveRequest(String token, String requestorEmail) {
 		
-		if(!token.startsWith("Bearer "))
-			throw new AuthenticationException(ExceptionMessages.NO_AUTH_TOKEN);
-		
-		String addresseeEmail = authenticationUtils.extractUsername(token.substring(7));
+		UserEntity addressee =  userService.findUser(token);
+		String addresseeEmail = addressee.getEmail();
 		
 		if(requestorEmail.equals(addresseeEmail))
 				throw new BillShareException(ExceptionMessages.SELF_REQUEST);
 		
 		UserEntity requestor =  userRepository.findByEmail(requestorEmail);
-		UserEntity addressee =  userRepository.findByEmail(addresseeEmail);
-	
+		
 		if(requestor == null || addressee == null)
 			throw new RecordNotFoundException(ExceptionMessages.USER_NOT_FOUND);
 		
@@ -111,15 +106,15 @@ public class FriendService {
 	
 
 	public List<UserEntity> getAllFriendsofUser(String token, String status) {
-		
-		if(!token.startsWith("Bearer "))
-			throw new RuntimeException(ExceptionMessages.NO_AUTH_TOKEN);
-		UserEntity user =  userRepository.findByEmail(authenticationUtils.extractUsername(token.substring(7)));
-		if(user == null)
-			throw new RecordNotFoundException(ExceptionMessages.USER_NOT_FOUND);
-		
+
+		UserEntity user =  userService.findUser(token);
 		List<UserEntity> friends = friendRepository.findFriendsofUser(user, status);
 		return friends;
+	}
+	
+	//used in bills service
+	public List<UserEntity> getAllFriendsofUser(String email) {
+		return friendRepository.findFriendsofUser(userService.findUserByEmail(email), "APPROVED");
 	}
 
 }

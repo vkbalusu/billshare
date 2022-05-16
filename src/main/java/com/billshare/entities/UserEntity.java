@@ -1,10 +1,11 @@
 package com.billshare.entities;
 
 import java.sql.Timestamp;
-import java.util.Collection;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -41,11 +42,30 @@ public class UserEntity {
 	
 	public Timestamp lastUpdateDate;
 	
-	@OneToMany(mappedBy = "requester")
-	public Collection<FriendEntity> friends;
+	@OneToMany(mappedBy = "requester", fetch = FetchType.LAZY)
+	public List<FriendEntity> friends;
 				
-	@OneToMany(mappedBy = "addressee")
-	public Collection<FriendEntity> friendOf;
+	@OneToMany(mappedBy = "addressee", fetch = FetchType.LAZY)
+	public List<FriendEntity> friendOf;
+	
+	@OneToMany(mappedBy = "debtor", fetch = FetchType.LAZY)
+	public List<IndebtEntity> indebtBills;
+	
+	@OneToMany(mappedBy = "createdBy", fetch = FetchType.LAZY)
+	public List<BillEntity> createdBills;
+	
+	@OneToMany(mappedBy = "lastUpdateBy", fetch = FetchType.LAZY)
+	public List<BillEntity> lastUpdatedBills;
+	
+	@OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+	public List<UserGroupEntity> groups;
+	
+	@OneToMany(mappedBy = "createdBy", fetch = FetchType.LAZY)
+	public List<GroupEntity> createdGroups;
+	
+	@OneToMany(mappedBy = "lastUpdateBy", fetch = FetchType.LAZY)
+	public List<BillEntity> lastUpdatedGroups;
+	
 	
 	public UserEntity() {
 		
@@ -160,20 +180,68 @@ public class UserEntity {
 		this.lastUpdateDate = lastUpdateDate;
 	}
 
-	public Collection<FriendEntity> getFriends() {
+	public List<FriendEntity> getFriends() {
 		return friends;
 	}
 
-	public void setFriends(Collection<FriendEntity> friends) {
+	public void setFriends(List<FriendEntity> friends) {
 		this.friends = friends;
 	}
 
-	public Collection<FriendEntity> getFriendOf() {
+	public List<FriendEntity> getFriendOf() {
 		return friendOf;
 	}
 
-	public void setFriendOf(Collection<FriendEntity> friendOf) {
+	public void setFriendOf(List<FriendEntity> friendOf) {
 		this.friendOf = friendOf;
+	}
+
+	public List<BillEntity> getCreatedBills() {
+		return createdBills;
+	}
+
+	public void setCreatedBills(List<BillEntity> createdBills) {
+		this.createdBills = createdBills;
+	}
+
+	public List<BillEntity> getLastUpdatedBills() {
+		return lastUpdatedBills;
+	}
+
+	public void setLastUpdatedBills(List<BillEntity> lastUpdatedBills) {
+		this.lastUpdatedBills = lastUpdatedBills;
+	}
+
+	public List<IndebtEntity> getIndebtBills() {
+		return indebtBills;
+	}
+
+	public void setIndebtBills(List<IndebtEntity> indebtBills) {
+		this.indebtBills = indebtBills;
+	}
+
+	public List<UserGroupEntity> getGroups() {
+		return groups;
+	}
+
+	public void setGroups(List<UserGroupEntity> groups) {
+		this.groups = groups;
+	}
+
+	public List<GroupEntity> getCreatedGroups() {
+		return createdGroups;
+	}
+
+	public void setCreatedGroups(List<GroupEntity> createdGroups) {
+		this.createdGroups = createdGroups;
+	}
+
+	public List<BillEntity> getLastUpdatedGroups() {
+		return lastUpdatedGroups;
+	}
+
+	public void setLastUpdatedGroups(List<BillEntity> lastUpdatedGroups) {
+		this.lastUpdatedGroups = lastUpdatedGroups;
 	}
 	
 }

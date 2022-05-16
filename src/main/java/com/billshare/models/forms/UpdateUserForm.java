@@ -5,6 +5,7 @@ import javax.validation.constraints.Size;
 import com.billshare.utils.ValidationMessages;
 
 public class UpdateUserForm {
+	
 	@Size(max = 30, message = ValidationMessages.FIRST_NAME_MAX_LEN)
 	private String firstName;
 	

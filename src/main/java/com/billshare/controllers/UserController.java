@@ -1,7 +1,7 @@
 package com.billshare.controllers;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -44,20 +44,20 @@ public class UserController {
 	@GetMapping()
 	public ResponseEntity<BillShareResponse> getAllUsers(){
 		List<UserEntity> users = userService.getAllUsers();
-		List<UserDTO> userDTOs = new ArrayList<>();
-		for(UserEntity user : users) {
-			UserDTO userDTO = new UserDTO();
-			userMapper.convertEntityToDTO(user, userDTO);
-			userDTOs.add(userDTO);
-		}
+		List<UserDTO> userDTOs = users.stream().map(user -> userMapper.convertEntityToDTO(user)).collect(Collectors.toList());
+//		for(UserEntity user : users) {
+//			UserDTO userDTO = new UserDTO();
+//			userMapper.convertEntityToDTO(user, userDTO);
+//			userDTOs.add(userDTO);
+//		}
 		return ResponseEntity.ok(new BillShareResponse(HttpStatus.OK, userDTOs, null));
 	}
 	
 	@GetMapping("/user")
 	public ResponseEntity<BillShareResponse> getUserInfo(@RequestHeader(value = "Authorization") String token){
 		UserEntity user = userService.findUser(token);
-		UserDTO userDTO = new UserDTO();
-		userMapper.convertEntityToDTO(user, userDTO);
+		UserDTO userDTO = userMapper.convertEntityToDTO(user);
+		//userMapper.convertEntityToDTO(user, userDTO);
 		return ResponseEntity.ok(new BillShareResponse(HttpStatus.OK, userDTO, null));
 	}
 	
@@ -65,12 +65,12 @@ public class UserController {
 	@GetMapping("/search")
 	public ResponseEntity<BillShareResponse> searchUser(@RequestParam String email) {
 		List<UserEntity> users = userService.searchUsers(email);
-		List<UserDTO> userDTOs = new ArrayList<>();
-		for(UserEntity user : users) {
-			UserDTO userDTO = new UserDTO();
-			userMapper.convertEntityToDTO(user, userDTO);
-			userDTOs.add(userDTO);
-		}
+		List<UserDTO> userDTOs = users.stream().map(user -> userMapper.convertEntityToDTO(user)).collect(Collectors.toList());
+//		for(UserEntity user : users) {
+//			UserDTO userDTO = new UserDTO();
+//			userMapper.convertEntityToDTO(user, userDTO);
+//			userDTOs.add(userDTO);
+//		}
 		return ResponseEntity.ok(new BillShareResponse(HttpStatus.OK, userDTOs, null));
 	}
 	
@@ -78,16 +78,16 @@ public class UserController {
 	@PostMapping
 	public ResponseEntity<BillShareResponse> registerNewUser(@Valid @RequestBody CreateUserForm form) {
 		UserEntity user = userService.createUser(form);
-		UserDTO userDTO = new UserDTO();
-		userMapper.convertEntityToDTO(user, userDTO);
+		UserDTO userDTO = userMapper.convertEntityToDTO(user);
+//		userMapper.convertEntityToDTO(user, userDTO);
 		return ResponseEntity.ok(new BillShareResponse(HttpStatus.OK, userDTO, null));
 	}
 	
 	@PutMapping
 	public ResponseEntity<BillShareResponse> updateExistingUser(@Valid @RequestBody UpdateUserForm form, @RequestHeader(value = "Authorization") String token) {
 		UserEntity user = userService.updateUser(form, token);
-		UserDTO userDTO = new UserDTO();
-		userMapper.convertEntityToDTO(user, userDTO);
+		UserDTO userDTO = userMapper.convertEntityToDTO(user);
+//		userMapper.convertEntityToDTO(user, userDTO);
 		return ResponseEntity.ok(new BillShareResponse(HttpStatus.OK, userDTO, null));
 	}
 	

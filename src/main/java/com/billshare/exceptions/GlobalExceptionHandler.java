@@ -81,9 +81,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler{
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 	
-	
-	
-	
 	@Override
 	protected ResponseEntity<Object> handleMissingServletRequestParameter(MissingServletRequestParameterException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
@@ -91,6 +88,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler{
 		BillShareResponse response = new BillShareResponse(HttpStatus.BAD_REQUEST, null, errorDetails);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
+	
+	
 
 	private String getStackTrace(Exception exception) {
 		StringWriter stringWriter = new StringWriter();

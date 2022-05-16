@@ -36,10 +36,7 @@ public class UserService {
 	public UserEntity findUser(String token) {
 		if(!token.startsWith("Bearer "))
 			throw new AuthenticationException(ExceptionMessages.NO_AUTH_TOKEN);
-		UserEntity user =  userRepository.findByEmail(authenticationUtils.extractUsername(token.substring(7)));
-		if(user == null)
-			throw new RecordNotFoundException(ExceptionMessages.USER_NOT_FOUND);
-		return user;
+		return findUserByEmail(authenticationUtils.extractUsername(token.substring(7)));
 	}
 	
 	public List<UserEntity> searchUsers(String email){
@@ -63,9 +60,18 @@ public class UserService {
 		if(user == null) {
 			throw new RecordNotFoundException(ExceptionMessages.USER_NOT_FOUND);
 		}
+//		user = userMapper.mapUserDetails(updateUserForm);
 		userMapper.mapUserDetails(updateUserForm, user);
 		user.setLastUpdateDate(new Timestamp(System.currentTimeMillis()));
 		userRepository.save(user);
+		return user;
+	}
+
+	//used in bills service
+	public UserEntity findUserByEmail(String email) {
+		UserEntity user = userRepository.findByEmail(email);
+		if(user == null)
+			throw new RecordNotFoundException(ExceptionMessages.USER_NOT_FOUND);
 		return user;
 	}
 }

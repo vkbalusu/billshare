@@ -11,6 +11,10 @@ import com.billshare.models.forms.UpdateUserForm;
 
 @Mapper
 public interface UserUpdateFormMapper {
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    void mapUserDetails(UpdateUserForm dto, @MappingTarget UserEntity entity);
+	
+//    @BeanMapping(nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)
+//    UserEntity mapUserDetails(UpdateUserForm dto);
+	
+	@BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    void mapUserDetails(UpdateUserForm dto, @MappingTarget UserEntity userEntity);
 }
